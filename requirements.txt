@@ -5,3 +5,5 @@ torchaudio
 ipykernel
 datasets
 tdqm
+librosa
+einops
