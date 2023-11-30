@@ -1,9 +1,5 @@
 transformers
-torch 
-torchvision 
-torchaudio
+torch
 ipykernel
-datasets
-tdqm
-librosa
-einops
+gym-chess
+gym
