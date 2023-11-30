@@ -1,5 +1,5 @@
 transformers
 torch
 ipykernel
-gym-chess
-gym
+chess
+stockfish
