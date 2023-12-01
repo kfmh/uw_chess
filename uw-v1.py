@@ -3,6 +3,7 @@ import chess.engine
 import chess.svg
 import json
 from time import sleep
+import os 
 
 with open("./keys.json") as f:
     keys = json.load(f)
@@ -33,21 +34,26 @@ def game_score(board):
     else:
         favor = "Black"
     print("score:", score, favor)
-    return chess.svg.board(board, size=400)
 
-# Game loop
+def clear_screen():
+    # Clear the console screen.
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-def new_game():
+def main():
 
     board = chess.Board()
     game_move = 1
     while not board.is_game_over():
+        clear_screen()
+        game_score(board)
+        print("\033[1m" + board + "\033[0m")
         if game_move % 2 == 0:
             engin_move(board)
+            sleep(2)
         else: 
-            move = str(input())
+            move = str(input("move: "))
             player_move(move, board)
         game_move += 1
-        game_score(board)
-        sleep(2)
 
+if __name__ == "__main__":
+    main()
