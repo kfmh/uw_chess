@@ -3,4 +3,3 @@ torch
 ipykernel
 chess
 stockfish
-matplotlib
