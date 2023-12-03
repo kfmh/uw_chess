@@ -3,3 +3,7 @@ torch
 ipykernel
 chess
 stockfish
+SpeechRecognition
+pydub
+python-dotenv
+PyAudio
