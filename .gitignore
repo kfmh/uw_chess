@@ -1,5 +1,6 @@
-.env/
+.env
+__pycache__/
 venv/
-DS-Store
-keys.json
+DS-Store/
 .ipynb
+notebooks/
