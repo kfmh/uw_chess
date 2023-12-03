@@ -1,6 +1,7 @@
-.env
+DS-Store/
 __pycache__/
 venv/
-DS-Store/
-.ipynb
 notebooks/
+/audio_samples
+.env
+*.ipynb
