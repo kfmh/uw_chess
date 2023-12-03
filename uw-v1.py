@@ -1,72 +1,29 @@
-# import chess
-# import chess.engine
-# import chess.svg
-# import json
-# from time import sleep
-# import os 
-
-# with open("./keys.json") as f:
-#     keys = json.load(f)
-
-# # Specify the path to the Stockfish binary
-# stockfish_path = keys["stockfish_path"]
-
-# # Set up the engine
-# engine = chess.engine.SimpleEngine.popen_uci(stockfish_path)
-
-
-
-# def engin_move(b):
-#     result = engine.play(b, chess.engine.Limit(time=0.1))
-#     board = b.push(result.move)
-#     return board
-
-# def player_move(move, b):
-#     board = b.push_san(str(move))
-#     return board
-
-# def game_score(board):
-#     info = engine.analyse(board, chess.engine.Limit(time=0.1))
-
-#     score = info["score"].relative.score()
-#     if score >0:
-#         favor = "White"
-#     else:
-#         favor = "Black"
-#     print("score:", score, favor)
-
-# def clear_screen():
-#     # Clear the console screen.
-#     os.system('cls' if os.name == 'nt' else 'clear')
-
-# def main():
-
-#     board = chess.Board()
-#     game_move = 1
-#     while not board.is_game_over():
-#         clear_screen()
-#         game_score(board)
-#         print(board)
-#         if game_move % 2 == 0:
-#             engin_move(board)
-#             sleep(2)
-#         else: 
-#             move = str(input("move: "))
-#             player_move(move, board)
-#         game_move += 1
-
-# if __name__ == "__main__":
-    # main()
-
-from UW_ChessV1 import UW_Chess
+from UW_ChessV1 import UW_Chess, STT_move
+from WhisperSTT import RecordVoice
 import os
 from time import sleep
+from fastspeech2 import TTS
+
+# from MicrosoftTTS import TTS
+tts = TTS()
 game = UW_Chess()
+stt = RecordVoice()
+stt_move = STT_move()
 
 def clear_screen():
     # Clear the console screen.
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def format_response(engin_move):
+    inserts = '. '
+    positions = [1, 3, 5]
+    formatting = engin_move
+    for i, position in enumerate(sorted(positions)):
+        # Adjust position for the already inserted characters
+        adjusted_position = position + i
+        formatting = formatting[:adjusted_position] + inserts + formatting[adjusted_position:]
+
+    return formatting.upper()
 
 def main():
     board = game.board
@@ -80,15 +37,22 @@ def main():
         if game_move % 2 == 0:
             engin_move = game.engin_move(board)
             move_stack.append(engin_move)
+            tts_formatting = format_response(engin_move)
+            tts.speech(tts_formatting)            
             sleep(2)
             game_move += 1
         else: 
-            move = str(input("move: "))
+            # move = str(input("move: "))
+            text = stt.speech_to_text()
+            print(text)
+            move = stt_move.uci_str(text)
+            print(move)
             valid_move, player_move = game.player_move(move, board)
-            move_stack.append(player_move)
             if valid_move:
+                move_stack.append(player_move)
                 game_move += 1
-            else: pass
+            else: 
+                tts.speech(player_move)            
 
 if __name__ == "__main__":
     main()
