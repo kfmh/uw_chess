@@ -1,16 +1,9 @@
 import speech_recognition as sr 
-from transformers import WhisperProcessor, WhisperForConditionalGeneration
-from datasets import load_dataset
-import soundfile as sf
-import io
-import numpy as np
-import pyaudio
-import json 
-import requests
+import io, json, requests
 
+import os
 
-with open('hf.json', 'r') as file:
-    key = json.load(file)
+key = os.getenv("HFwrite")
 
 class CustomMicrophone(sr.Microphone):
     def __init__(self, *args, **kwargs):
@@ -19,7 +12,7 @@ class CustomMicrophone(sr.Microphone):
 
 class RecordVoice:
     def __init__(self):
-        self.headers = {"Authorization": f"Bearer {key['hf-write']}"}
+        self.headers = {"Authorization": f"Bearer {key}"}
         self.API_URL = "https://api-inference.huggingface.co/models/openai/whisper-large-v2"
         self.Recognize = sr.Recognizer()
         self.Mic = CustomMicrophone()  # Use CustomMicrophone instead

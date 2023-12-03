@@ -1,22 +1,22 @@
-import chess
-import chess.engine
-import chess.svg
-import json
-from time import sleep
-import os 
-
-# Specify the path to the Stockfish binary
-with open("./keys.json") as f:
-    keys = json.load(f)
-stockfish_path = keys["stockfish_path"]
-
 # TODO: Legal moves function
 # return board.legal_moves.count()
+
+import chess, chess.engine
+import re
+import os
+from time import sleep
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+engine_path = os.getenv("engine_path")
 
 class UW_Chess:
     def __init__(self):
         # Set up the engine
-        self.engine = chess.engine.SimpleEngine.popen_uci(stockfish_path)
+        print(f"test {engine_path}")
+        self.engine = chess.engine.SimpleEngine.popen_uci(engine_path)
         self.board = chess.Board()
 
     def engin_move(self, board):
@@ -32,7 +32,13 @@ class UW_Chess:
         except chess.InvalidMoveError:
             print("Invalid move, try again")
             sleep(1.5)
-            return False
+            return False, "None"
+        except chess.IllegalMoveError:
+            error = "Not legal move, try again" 
+            print(error)
+            sleep(1.5)
+            return False, "Not legal move, try again"
+
 
     def score(self, board):
         info = self.engine.analyse(board, chess.engine.Limit(time=0.1))
@@ -46,6 +52,20 @@ class UW_Chess:
         print("score:", score, favor)
         return score
 
-def clear_screen():
-    # Clear the console screen.
-    os.system('cls' if os.name == 'nt' else 'clear')
+
+class STT_move:
+    def __init__(self):
+        self.board_x = ['a','b','c','d','e','f','g','h']
+        self.board_y = ['1','2','3','4','5','6','7','8']
+
+    def uci_str(self, words:list):
+        try:
+            word_list = re.split('[,. ]', words["text"])
+            uci_move = ''
+            for i in word_list:
+                for l in list(i):
+                    if l in self.board_y:
+                        uci_move += i
+            return uci_move.lower()
+        except KeyError: 
+            return 'try again'
