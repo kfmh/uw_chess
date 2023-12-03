@@ -15,7 +15,6 @@ engine_path = os.getenv("engine_path")
 class UW_Chess:
     def __init__(self):
         # Set up the engine
-        print(f"test {engine_path}")
         self.engine = chess.engine.SimpleEngine.popen_uci(engine_path)
         self.board = chess.Board()
 
