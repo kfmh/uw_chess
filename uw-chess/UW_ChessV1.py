@@ -13,9 +13,10 @@ load_dotenv()
 engine_path = os.getenv("engine_path")
 
 class UW_Chess:
-    def __init__(self):
+    def __init__(self, bot_level=10):
         # Set up the engine
         self.engine = chess.engine.SimpleEngine.popen_uci(engine_path)
+        self.engine.configure({"Skill Level": bot_level})
         self.board = chess.Board()
 
     def engin_move(self, board):

@@ -57,7 +57,6 @@ class RecordVoice:
 
             print("end Rec STT")
             try:
-
                 response = requests.request("POST", self.API_URL, headers=self.headers, data=audio_io)
                 transcription = json.loads(response.content.decode("utf-8"))
 

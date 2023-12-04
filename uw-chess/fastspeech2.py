@@ -1,6 +1,7 @@
 import json
 import requests
 import io
+import pydub
 from pydub import AudioSegment
 from pydub.playback import play
 import os
@@ -19,3 +20,4 @@ class TTS:
         audio = AudioSegment.from_file(io.BytesIO(audio_bytes), format="flac")
         audio = audio.set_sample_width(2)
         play(audio)
+
