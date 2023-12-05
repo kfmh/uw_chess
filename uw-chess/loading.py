@@ -9,11 +9,9 @@ class Loading_status:
 
     def is_model_ready(self):
         # Replace with actual API call or status check
-        response1 = requests.get("https://api-inference.huggingface.co/models/openai/whisper-large-v2")
-        response2 = requests.get("https://api-inference.huggingface.co/models/facebook/fastspeech2-en-ljspeech")
-        print(response1)
-        print(response2)
-        if response1.status_code == 200 and response2.status_code == 200:
+        response = requests.get("https://api-inference.huggingface.co/models/facebook/fastspeech2-en-ljspeech")
+
+        if response.status_code == 200:
             return True
         return False
 
