@@ -1,10 +1,9 @@
 import pygame
 import chess
-import sys
 
 
-# Initialize Pygame
 pygame.init()
+
 
 class ChessBoard_Render:
     def __init__(self):
@@ -13,14 +12,15 @@ class ChessBoard_Render:
         self.HEIGHT = 400
         self.ROWS, self.COLS = 8, 8
         self.SQUARE_SIZE = self.WIDTH // self.COLS
-
+        self.clock = pygame.time.Clock()
         # Colors
         self.WHITE = (218, 255, 238)
         self.BLACK = (43, 100, 62)
 
         # Set up the screen
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        pygame.display.set_caption("Chess")
+        pygame.display.set_caption("Undr Wolf - Blindfold Chess")
+        self.images = self.load_images()
 
     # Load images
     def load_images(self):
@@ -29,7 +29,12 @@ class ChessBoard_Render:
         images = {}
         for color in colors:
             for piece in pieces:
-                images[color + piece] = pygame.transform.scale(pygame.image.load(f"./game_assets/{color + piece}.png"), (self.SQUARE_SIZE, self.SQUARE_SIZE))
+                try:
+                    images[color + piece] = pygame.transform.scale(
+                        pygame.image.load(f"./game_assets/{color + piece}.png"), 
+                        (self.SQUARE_SIZE, self.SQUARE_SIZE))
+                except FileNotFoundError:
+                    print(f"Error loading image for {color + piece}")
         return images
 
     def draw_board(self):
@@ -41,28 +46,25 @@ class ChessBoard_Render:
     def draw_pieces(self, board):
         for sq in chess.SQUARES:
             piece = board.piece_at(sq)
-            images = self.load_images()
             if piece:
                 color = 'w' if piece.color == chess.WHITE else 'b'
                 key = color + piece.symbol().upper()
                 column = sq % 8
-                row = sq // 8
-                self.screen.blit(images[key], pygame.Rect(column * self.SQUARE_SIZE, row * self.SQUARE_SIZE, self.SQUARE_SIZE, self.SQUARE_SIZE))
+                row = 7 - (sq // 8)
+                self.screen.blit(self.images[key], 
+                                 pygame.Rect(column * self.SQUARE_SIZE, 
+                                             row * self.SQUARE_SIZE, 
+                                             self.SQUARE_SIZE, 
+                                             self.SQUARE_SIZE))
 
+    def game_render(self, board):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+                return running
 
-    def init_board(self, board):
-        clock = pygame.time.Clock()
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-
-            self.draw_board()
-            self.draw_pieces(board)
-            pygame.display.flip()
-            clock.tick(60)
-
-        pygame.quit()
-        sys.exit()
-
+        self.draw_board()
+        self.draw_pieces(board)
+        pygame.display.flip()
+        self.clock.tick(60)

@@ -16,8 +16,14 @@ class TTS:
     def speech(self, payload):
         response = requests.post(self.API_URL, headers=self.headers, json=payload)
         audio_bytes = response.content
+        success = False
 
-        audio = AudioSegment.from_file(io.BytesIO(audio_bytes), format="flac")
+        while not success:
+            try:
+                audio = AudioSegment.from_file(io.BytesIO(audio_bytes), format="flac")
+                success = True
+            except pydub.exceptions.CouldntDecodeError:
+                pass
         audio = audio.set_sample_width(2)
         play(audio)
 
