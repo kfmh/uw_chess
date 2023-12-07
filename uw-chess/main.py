@@ -63,6 +63,7 @@ def main():
     try:
         while not board.is_game_over() and running:
             clear_screen()
+            print(game_move)
             game.score(board)
             print(f"{move_stack}\n")
             print(f"{board}\n")
@@ -85,6 +86,7 @@ def main():
                 move = stt_move.uci_str(text)
                 print(move)
                 valid_move, player_move = game.player_move(move, board)
+                print(player_move)
                 if valid_move:
                     move_stack.append(player_move)
                     game_move += 1
@@ -93,7 +95,7 @@ def main():
 
     except KeyboardInterrupt:
         print("\nExiting the program gracefully...")
-        sleep(2)
+        sleep(1)
         # Perform any necessary cleanup here
         sys.exit(0)
 if __name__ == "__main__":
