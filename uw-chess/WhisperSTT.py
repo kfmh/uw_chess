@@ -19,27 +19,6 @@ class RecordVoice:
         with CustomMicrophone() as source:  # Use CustomMicrophone instead
             self.Recognize.adjust_for_ambient_noise(source)
 
-    def listen_for_keyword(self, 
-                           keyword="activate", 
-                           phrase_timeout=None):
-
-        with CustomMicrophone() as source:
-            print("Listening....")
-            audio = self.Recognize.listen(source, 
-                                          timeout=None, 
-                                          phrase_time_limit=phrase_timeout)
-            try:
-                text = self.Recognize.recognize_google(audio)
-                if keyword in text:
-                    print("== Activate ==")
-                    return True
-            except sr.UnknownValueError:
-                # If the audio wasn't understood, it's ok to just keep listening
-                print("activate_function?")
-                pass
-            except sr.RequestError:
-                print("API unavailable. Please check your internet connection")
-                return False
 
     def speech_to_text(self,
                        phrase_timeout=None):

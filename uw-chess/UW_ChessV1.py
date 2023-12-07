@@ -30,12 +30,9 @@ class UW_Chess:
             player_move = board.peek().uci()
             return True, player_move
         except chess.InvalidMoveError:
-            print("Invalid move, try again")
             sleep(1.5)
-            return False, "None"
+            return False, "Invalid move, try again"
         except chess.IllegalMoveError:
-            error = "Not legal move, try again" 
-            print(error)
             sleep(1.5)
             return False, "Not legal move, try again"
 
