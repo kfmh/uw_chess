@@ -1,13 +1,12 @@
-from UW_ChessV1 import UW_Chess, STT_move
-from distil_whisper import RecordVoice
+from UW_ChessV1 import UW_Chess
+from STT import RecordVoice
 from loading import Loading_status
 import os
 from time import sleep
-from fastspeech2 import TTS
 import argparse
 import sys
 from render_board import ChessBoard_Render
-
+from TTS import TTS_move
 
 
 parser = argparse.ArgumentParser(prog="Undr Wolf Chess", 
@@ -25,16 +24,14 @@ parser.add_argument('-r2d', '--render_2d',
                           action="store_true",
                           help='Board render flag 2D-classic')
 
-
 args = parser.parse_args()
 
-
 # from MicrosoftTTS import TTS
-tts = TTS()
+tts = TTS_move()
 game = UW_Chess(bot_level=args.difficulty)
 stt = RecordVoice()
-stt_move = STT_move()
 status = Loading_status()
+
 
 render = ChessBoard_Render()
 
@@ -58,6 +55,7 @@ def main():
 
     running = True
     board = game.board
+    render.draw_board()
     game_move = 1
     move_stack = []
     try:
@@ -73,17 +71,14 @@ def main():
             if game_move % 2 == 0:
                 engin_move = game.engin_move(board)
                 move_stack.append(engin_move)
-                tts_formatting = format_response(engin_move)
 
-                tts.speech(tts_formatting)            
+                tts.speech(engin_move)            
 
-                sleep(2)
+                sleep(0.5)
                 game_move += 1
             else: 
                 # move = str(input("move: "))
-                text = stt.speech_to_text()
-                print(text)
-                move = stt_move.uci_str(text)
+                move = stt.listen()
                 print(move)
                 valid_move, player_move = game.player_move(move, board)
                 print(player_move)
@@ -94,7 +89,7 @@ def main():
                     tts.speech(player_move)            
 
     except KeyboardInterrupt:
-        print("\nExiting the program gracefully...")
+        print("\nExiting program")
         sleep(1)
         # Perform any necessary cleanup here
         sys.exit(0)

@@ -8,6 +8,8 @@ from time import sleep
 from dotenv import load_dotenv
 import os
 
+from runtime_test import LogExecutionTime
+
 load_dotenv()
 
 engine_path = os.getenv("engine_path")
@@ -19,11 +21,13 @@ class UW_Chess:
         self.engine.configure({"Skill Level": bot_level})
         self.board = chess.Board()
 
+    @LogExecutionTime
     def engin_move(self, board):
         result = self.engine.play(board, chess.engine.Limit(time=0.1))
         board.push(result.move)
         return result.move.uci()
 
+    @LogExecutionTime
     def player_move(self, move, board):
         try:
             board.push_san(str(move))
@@ -31,12 +35,12 @@ class UW_Chess:
             return True, player_move
         except chess.InvalidMoveError:
             sleep(1.5)
-            return False, "Invalid move, try again"
+            return False, "Not a valid move, try again"
         except chess.IllegalMoveError:
             sleep(1.5)
-            return False, "Not legal move, try again"
+            return False, "Not a legal move, try again"
 
-
+    @LogExecutionTime
     def score(self, board):
         info = self.engine.analyse(board, chess.engine.Limit(time=0.1))
 
@@ -50,22 +54,4 @@ class UW_Chess:
         return score
 
 
-class STT_move:
-    def __init__(self):
-        self.board_x = ['a','b','c','d','e','f','g','h']
-        self.board_y = ['1','2','3','4','5','6','7','8']
-        self.promotion  = {"knight": "n", "queen": "q", "bishop": "b", "pawn": "p"}
-
-    def uci_str(self, words:list):
-        try:
-            word_list = re.split('[,. ]', words["text"])
-            uci_move = ''
-            for i in word_list:
-                if len(uci_move) == 4 and i in self.promotion:
-                    uci_move += self.promotion[i]
-                for l in list(i):
-                    if l in self.board_y:
-                        uci_move += i
-            return uci_move.lower()
-        except KeyError: 
-            return 'try again'
+        
