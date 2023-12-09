@@ -7,6 +7,7 @@ import argparse
 import sys
 from render_board import ChessBoard_Render
 from TTS import TTS_move
+import asyncio
 
 
 parser = argparse.ArgumentParser(prog="Undr Wolf Chess", 
@@ -50,7 +51,12 @@ def format_response(engin_move):
 
     return formatting.upper()
 
-def main():
+async def player_STT_move():
+    audio = stt.listen()
+    recording, text = stt.analyze(audio)
+    return recording, text
+    
+async def main():
     status.status_check()
 
     running = True
@@ -77,10 +83,23 @@ def main():
                 sleep(0.5)
                 game_move += 1
             else: 
-                # move = str(input("move: "))
-                move = stt.listen()
-                print(move)
-                valid_move, player_move = game.player_move(move, board)
+                recording = True
+
+                # while recording:
+                #     recording, player_move = await player_STT_move()
+                #     print(f"Rec {recording} Move: {player_move}")
+                    
+                while recording:
+                    audio = stt.listen()
+                    recording, text = await stt.analyze(audio)
+                    if recording != True:
+                        player_move = text
+                        break
+
+                print(f"Rec {recording} Move: {player_move}")
+
+                print(player_move)
+                valid_move, player_move = game.player_move(player_move, board)
                 print(player_move)
                 if valid_move:
                     move_stack.append(player_move)
@@ -94,4 +113,4 @@ def main():
         # Perform any necessary cleanup here
         sys.exit(0)
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

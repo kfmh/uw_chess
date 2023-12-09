@@ -2,6 +2,7 @@ import speech_recognition as sr
 from time import sleep
 from UCI_formatting import formatting
 from runtime_test import LogExecutionTime
+import asyncio
 
 
 class CustomMicrophone(sr.Microphone):
@@ -20,25 +21,41 @@ class RecordVoice:
 
     @LogExecutionTime
     def listen(self, phrase_timeout=None):
-        recoding = True
-        
-        while recoding:
+        try:
             with CustomMicrophone() as source:
                 print("Listening....")
                 audio = self.Recognize.listen(source, 
                                             timeout=None, 
-                                            phrase_time_limit=phrase_timeout)
+                                            phrase_time_limit=None)
                 print("Stop Listening....")
-                try:
-                    text = self.Recognize.recognize_google(audio)
-                    print(text)
-                    uci = self.formatting.uci_str(text)
-                    if len(uci) < 6:
-                        recoding = False
-                        return uci
-                except sr.UnknownValueError:
-                    # If the audio wasn't understood, it's ok to just keep listening
-                    pass
-                except sr.RequestError:
-                    print("API unavailable. Please check your internet connection")
-                    sleep(2)
+                return audio
+        
+        except sr.RequestError:
+            print("API unavailable. Please check your internet connection")
+            sleep(1)
+            return None
+        
+
+    @LogExecutionTime
+    async def analyze(self, audio):
+        try:
+            text = self.Recognize.recognize_google(audio)
+            print(text)
+            uci = self.formatting.uci_str(text)
+            if uci:
+                # print(f'uci: {uci} len {len(uci)}')
+                return False, uci
+            else: 
+                return True, "try again" 
+
+        except sr.UnknownValueError:
+            # Handle the case where speech is not recognized
+            print("Speech was not understood.")
+            return True, None
+        
+        except sr.RequestError as e:
+            # Handle API request errors
+            print(f"Could not request results from Google Speech Recognition service; {e}")
+            return True, None
+
+    

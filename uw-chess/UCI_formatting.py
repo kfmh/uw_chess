@@ -7,6 +7,13 @@ class formatting:
         self.board_y = ['1','2','3','4','5','6','7','8']
         self.promotion  = {"knight": "n", "queen": "q", "bishop": "b", "pawn": "p"}
 
+
+    @LogExecutionTime
+    def check_format(self, string):
+        # Pattern: letter (a-h), digit (1-8), letter (a-h), digit (1-8)
+        pattern = r'^[a-h][1-8][a-h][1-8]$'
+        return bool(re.match(pattern, string))
+
     @LogExecutionTime
     def uci_str(self, words:list):
         try:
@@ -17,7 +24,12 @@ class formatting:
                     uci_move += self.promotion[i]
                 for l in list(i):
                     if l in self.board_y:
+
                         uci_move += i
-            return uci_move.lower()
+            print(f"uci formatting: {uci_move}")
+            if self.check_format(uci_move.lower()):
+                return uci_move.lower()
+            else: 
+                return False
         except KeyError: 
-            return 'try again'
+            return False 
