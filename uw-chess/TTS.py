@@ -4,6 +4,7 @@ from pydub import AudioSegment
 from pydub.playback import play
 from runtime_test import LogExecutionTime
 
+
 class TTS_move:
     def __init__(self):
         pass
