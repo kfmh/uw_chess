@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[options]
+include_package_data = true
+package_dir = {"" = "src"}
+packages = ["uw_chess"]
+
+[project]
+name = "uw_chess"
+version = "0.1.0b1"
+description = "Practice playing blindfold chess"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+urls = {source = "https://github.com/kfmh/uw-chess"}
+
+dependencies = [
+    "chess>=1.10.0",
+    "SpeechRecognition>=3.10.1",
+    "pydub>=0.25.1",
+    "python-dotenv>=1.0.0",
+    "PyAudio>=0.2.14",
+    "pygame>=2.5.2",
+    "gTTS>=2.4.0",
+]
+
+[project.scripts]
+uw_chess = "uw_chess.main:main_wrapper"
