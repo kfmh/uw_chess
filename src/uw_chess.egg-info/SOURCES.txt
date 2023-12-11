@@ -7,6 +7,7 @@ src/uw_chess/TTS.py
 src/uw_chess/UCI_formatting.py
 src/uw_chess/UW_ChessV1.py
 src/uw_chess/__init__.py
+src/uw_chess/cli_parser.py
 src/uw_chess/loading.py
 src/uw_chess/main.py
 src/uw_chess/render_board.py
@@ -45,3 +46,4 @@ src/uw_chess/game_assets/new/wN.png
 src/uw_chess/game_assets/new/wP.png
 src/uw_chess/game_assets/new/wQ.png
 src/uw_chess/game_assets/new/wR.png
+src/uw_chess/tests/execution_time_log.txt
