@@ -74,9 +74,9 @@ async def main():
 
             # Chess engine's turn to move
             if game_move % 2 == 0: # Users moves on uneven numbers and game engin (chess bot) moves on even numbers
-                engin_move = game.engin_move(board) # Function returns game engin (chess bot) move s UCI-string
-                move_stack.append(engin_move)       # Append move to move_stack
-                tts.speech(engin_move)              # Text-to-speech game engin move
+                engine_move = game.engine_move(board) # Function returns game engin (chess bot) move s UCI-string
+                move_stack.append(engine_move)       # Append move to move_stack
+                tts.speech(engine_move)              # Text-to-speech game engin move
                 game_move += 1                      # Increment game move
             else: 
                 # Player's turn to move
