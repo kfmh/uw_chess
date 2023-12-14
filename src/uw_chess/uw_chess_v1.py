@@ -1,17 +1,22 @@
+# ============================================================================
+# uw_chess_v1.py
+# Main game play logic
+# ============================================================================
+
 from .runtime_test import LogExecutionTime
 from dotenv import load_dotenv
 from time import sleep
 import chess, chess.engine
-import os
 import random
 
 class UW_Chess:
     """
-    A class to manage a game of chess with an engine.
+    This class manages all game logic.
 
-    This class creates a chess game environment where a player can interact with a chess engine. It allows
-    for engine moves, player moves, evaluation of the board state, and generation of random positions. 
-    The engine's difficulty can be adjusted.
+    This class creates a chess game environment where a player can interact with a chess engine. 
+    It allows for game engine and player to moves, evaluation of the board state, 
+    It can generation of random starting position with specified number of pieces left on the board. 
+    And set game engine difficulty level.
 
     Attributes:
         engine (chess.engine.SimpleEngine): The chess engine for making moves and evaluations.
@@ -21,24 +26,22 @@ class UW_Chess:
     def __init__(self, engine_path, bot_level=10):
         """
         Initializes the UW_Chess class with a specified engine path and bot level.
-
         Args:
             engine_path (str): Path to the chess engine executable.
             bot_level (int, optional): Skill level of the engine. Defaults to 10.
         """
         # Set up the engine
         self.engine = chess.engine.SimpleEngine.popen_uci(engine_path)
-        self.engine.configure({"Skill Level": bot_level})
+        self.engine.configure({"Skill Level": bot_level}) # set bot level
         self.board = chess.Board()
+        print(self.engine.options['Skill Level'].current)
 
     @LogExecutionTime
     def engine_move(self, board):
         """
         Calculates and makes a move for the engine.
-
         Args:
             board (chess.Board): The current state of the chess game.
-
         Returns:
             str: The move made by the engine in UCI notation.
         """
@@ -50,11 +53,9 @@ class UW_Chess:
     def player_move(self, move, board):
         """
         Processes and executes a move made by the player.
-
         Args:
-            move (str): The move in SAN notation.
+            move (str): The move in SAN notation (Standard Algebraic Notation).
             board (chess.Board): The current state of the chess game.
-
         Returns:
             tuple: A tuple containing a boolean indicating success, and the move in UCI notation or an error message.
         """
@@ -73,10 +74,8 @@ class UW_Chess:
     def score(self, board):
         """
         Analyzes the current board position and returns the score.
-
         Args:
             board (chess.Board): The current state of the chess game.
-
         Returns:
             int: The score of the current board state in centipawns.
         """
@@ -95,10 +94,8 @@ class UW_Chess:
     def generate_random_position(self, target_pieces=16):
         """
         Generates a random position on the board.
-
         Args:
             target_pieces (int, optional): The target number of pieces on the board. Defaults to 16.
-
         Returns:
             tuple: A tuple containing the current board state and a list of legal moves.
         """

@@ -3,9 +3,9 @@
 # Main script and game loop
 # ============================================================================
 
-from .UW_ChessV1 import UW_Chess
-from .STT import RecordVoice
-from .TTS import TTS_move
+from .uw_chess_v1 import UW_Chess
+from .stt import RecordVoice
+from .tts import TTS_move
 from .render_board import ChessBoard_Render
 from .loading import Loading_status
 from .cli_parser import get_parser

@@ -5,4 +5,3 @@ python-dotenv==1.0.0
 PyAudio==0.2.14
 pygame==2.5.2
 gTTS==2.4.0
-pkg_resources

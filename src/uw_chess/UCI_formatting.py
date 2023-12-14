@@ -1,3 +1,8 @@
+# ============================================================================
+# uci_formatting.py
+# logging the time it takes to run functions
+# ============================================================================
+
 import re
 from .runtime_test import LogExecutionTime
 
@@ -18,7 +23,7 @@ class formatting:
     def __init__(self):
         self.board_x = ['a','b','c','d','e','f','g','h']
         self.board_y = ['1','2','3','4','5','6','7','8']
-        self.promotion  = {"knight": "n", "queen": "q", "bishop": "b", "pawn": "p"}
+        self.promotion  = {"king": "k", "queen": "q", "knight": "n", "bishop": "b", "pawn": "p"}
 
     @LogExecutionTime
     def check_format(self, string):
@@ -41,7 +46,7 @@ class formatting:
     @LogExecutionTime
     def uci_str(self, words:list):
         """
-        Takes a string and splits on space "," "." or " ".
+        Takes a string and splits on "," "." or " ".
         Then converts list of words into UCI-string formatted chess move.
 
         This method processes a list of words, attempting to construct a UCI-compliant chess move.
