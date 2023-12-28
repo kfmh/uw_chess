@@ -4,10 +4,10 @@
 # ============================================================================
 
 
+from uci_formatting import formatting
+from runtime_test import LogExecutionTime
 import speech_recognition as sr 
 from time import sleep
-from .uci_formatting import formatting
-from .runtime_test import LogExecutionTime
 
 class CustomMicrophone(sr.Microphone):
     """

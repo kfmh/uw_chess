@@ -3,11 +3,11 @@
 # 
 # ============================================================================
 
+from runtime_test import LogExecutionTime
 from gtts import gTTS
 import io
 from pydub import AudioSegment
 from pydub.playback import play
-from .runtime_test import LogExecutionTime
 
 class TTS_move:
     """

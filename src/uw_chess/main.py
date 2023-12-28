@@ -3,12 +3,12 @@
 # Main script and game loop
 # ============================================================================
 
-from .uw_chess_v1 import UW_Chess
-from .stt import RecordVoice
-from .tts import TTS_move
-from .render_board import ChessBoard_Render
-from .loading import Loading_status
-from .cli_parser import get_parser
+from uw_chess_v1 import UW_Chess
+from stt import RecordVoice
+from tts import TTS_move
+from render_board import ChessBoard_Render
+from loading import Loading_status
+from cli_parser import get_parser
 from time import sleep
 import os
 import sys

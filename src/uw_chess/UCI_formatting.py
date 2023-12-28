@@ -3,8 +3,8 @@
 # logging the time it takes to run functions
 # ============================================================================
 
+from runtime_test import LogExecutionTime
 import re
-from .runtime_test import LogExecutionTime
 
 class formatting:
     """

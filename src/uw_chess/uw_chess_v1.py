@@ -3,7 +3,7 @@
 # Main game play logic
 # ============================================================================
 
-from .runtime_test import LogExecutionTime
+from runtime_test import LogExecutionTime
 from dotenv import load_dotenv
 from time import sleep
 import chess, chess.engine
@@ -34,7 +34,7 @@ class UW_Chess:
         self.engine = chess.engine.SimpleEngine.popen_uci(engine_path)
         self.engine.configure({"Skill Level": bot_level}) # set bot level
         self.board = chess.Board()
-        print(self.engine.options['Skill Level'].current)
+
 
     @LogExecutionTime
     def engine_move(self, board):
