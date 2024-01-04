@@ -1,5 +1,5 @@
 .DS-Store/
-__pycache__/
+*__pycache__/
 venv/
 notebooks/
 /audio_samples
