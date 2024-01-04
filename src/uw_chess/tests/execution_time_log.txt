@@ -1,3 +1,5 @@
 generate_random_position executed in 0.00010800361633300781 seconds
 score executed in 0.10188698768615723 seconds
 listen executed in 9.5367431640625e-07 seconds
+generate_random_position executed in 0.000637054443359375 seconds
+score executed in 0.10563492774963379 seconds

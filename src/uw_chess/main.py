@@ -4,15 +4,16 @@
 # ============================================================================
 
 from uw_chess_v1 import UW_Chess
-from stt import RecordVoice
+# from _stt import RecordVoice
 from tts import TTS_move
-from render_board import ChessBoard_Render
 from loading import Loading_status
+from uci_formatting import Formatting
+from multiprocessing import Process, Queue
 from cli_parser import get_parser
 from time import sleep
 import os
 import sys
-import asyncio
+from realtime_stt import AudioRecorder, AudioAnalyzer
 
 # Cli argument parser from cli_parser.py
 parser  = get_parser()
@@ -20,25 +21,18 @@ args    = parser.parse_args()
 
 tts     = TTS_move()
 game    = UW_Chess(engine_path=args.engine_path, bot_level=args.difficulty)
-stt     = RecordVoice()
+# stt     = RecordVoice()
 status  = Loading_status()
-render  = ChessBoard_Render()
+formatting = Formatting()
 
 
 # Clear the console screen.
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-# =================================================================
-# TODO fix STT event-loop so that it is continuously recording
-async def player_STT_move():
-    audio = stt.listen()
-    recording, text = stt.analyze(audio)
-    return recording, text
-# TODO fix STT event-loop so that it is continuously recording
-# =================================================================
+
     
-async def main():
+def game_loop(game_queue, rec_queue, recorder):
     """
     The main function that runs the chess game loop. It handles game state, moves,
     and interactions between different components like TTS, STT, and the chess engine.
@@ -68,8 +62,6 @@ async def main():
             print(f"{board}\n")
             
             # Condition for rending 2D board
-            if args.render_2d:
-                render.game_render(board, args.coordinate_difficulty)
 
 
             # Chess engine's turn to move
@@ -80,19 +72,17 @@ async def main():
                 game_move += 1                      # Increment game move
             else: 
                 # Player's turn to move
-                recording = True                    # Set STT recording true
-                
-                # =================================================================
-                # TODO fix STT event-loop so that it is continuously recording
-                while recording:
-                    audio = await stt.listen()      
-                    recording, text = await stt.analyze(audio)
-                    if not recording:
-                        player_move = text
-                        break
-                # TODO fix STT event-loop so that it is continuously recording
-                # =================================================================
+                recorder.process_rec("rec")
+                player_making_move = True
+                while player_making_move:
+                    text = game_queue.get()
+                    uci = formatting.uci_str(text)
+                    if uci:
+                        player_making_move = False
 
+                rec_queue.put('stop')
+
+                
                 valid_move, player_move = game.player_move(player_move, board) # update board with users move
                 if valid_move:
                     move_stack.append(player_move)
@@ -106,9 +96,40 @@ async def main():
         sleep(1)
         sys.exit(0)
 
-def main_wrapper():
-    # Wrapper function for the main async function.
-    asyncio.run(main())
+def main():
+    print("starting")
+    
+    rec_queue = Queue()  # Queue for raw data to recorder and analyzer
+    game_queue = Queue()  # Queue for processed data to game loop
+    
+    recorder = AudioRecorder(rec_queue)
+    analyzer = AudioAnalyzer(rec_queue, game_queue)
+
+    p1 = Process(target=analyzer.process_analyze, args=('analyze',))
+    p2 = Process(target=recorder.process_rec, args=('rec1',))
+    p3 = Process(target=game_loop, args=(game_queue, rec_queue, recorder))  # Pass the game_queue to game_loop
+    
+    p1.start()
+    p2.start()
+    p3.start()
+
+    try:
+        # Wait for the processes to finish (or handle them as needed)
+        p1.join()
+        p2.join()
+        p3.join()
+
+    except KeyboardInterrupt:
+        print("Interrupted by user, shutting down...")
+
+        p1.terminate()
+        p2.terminate()
+        p3.terminate()
+        
+        p1.join()
+        p2.join()
+        p3.join()
+        print("Processes terminated successfully.")
 
 if __name__ == "__main__":
-    main_wrapper()
+    main()

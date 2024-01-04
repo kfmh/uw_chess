@@ -6,7 +6,7 @@
 from runtime_test import LogExecutionTime
 import re
 
-class formatting:
+class Formatting:
     """
     A class for handling and validating chess move formatting.
 
