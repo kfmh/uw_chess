@@ -1,2 +1,0 @@
-[console_scripts]
-uw_chess = uw_chess.main:main_wrapper
