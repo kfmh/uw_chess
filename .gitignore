@@ -5,3 +5,5 @@ notebooks/
 /audio_samples
 .env
 *.ipynb
+*.egg-info
+*dist/
